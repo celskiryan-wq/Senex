@@ -177,7 +177,7 @@ Respond ONLY with valid JSON. No markdown, no backticks, no preamble. Use this e
           "content-type": "application/json",
           "anthropic-version": "2023-06-01",
           "anthropic-dangerous-direct-browser-access": "true",
-          "x-api-key": "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",
+          "x-api-key": "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",
         },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514",
