@@ -170,7 +170,7 @@ Respond ONLY with valid JSON. No markdown, no backticks, no preamble. Use this e
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
+          model: "claude-haiku-4-20251001",
           max_tokens: 2000,
           messages: [{ role: "user", content: prompt }]
         })
