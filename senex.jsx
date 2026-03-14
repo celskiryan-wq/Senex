@@ -171,7 +171,7 @@ Respond ONLY with valid JSON. No markdown, no backticks, no preamble. Use this e
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514",
-          max_tokens: 4000,
+          max_tokens: 2000,
           messages: [{ role: "user", content: prompt }]
         })
       });
