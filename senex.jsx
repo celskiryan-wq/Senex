@@ -171,14 +171,11 @@ Respond ONLY with valid JSON. No markdown, no backticks, no preamble. Use this e
 }`;
 
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          "anthropic-version": "2023-06-01",
-          "anthropic-dangerous-direct-browser-access": "true",
-          "x-api-key": "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",
-        },
+     const response = await fetch('/api/brief', {
+  method: 'POST',
+  headers: {
+    'content-type': 'application/json',
+  },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514",
           max_tokens: 4000,
