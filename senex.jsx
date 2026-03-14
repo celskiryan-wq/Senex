@@ -183,8 +183,8 @@ Respond ONLY with valid JSON. No markdown, no backticks, no preamble. Use this e
         })
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error?.message || "API error " + res.status);
+    const data = await response.json();
+if (!response.ok) throw new Error(data?.error?.message || "API error " + response.status);
 
       const raw = data.content.map(b => b.type === "text" ? b.text : "").join("");
       const match = raw.match(/\{[\s\S]*\}/);
