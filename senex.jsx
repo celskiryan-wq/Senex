@@ -44,7 +44,6 @@ function openInTab(brief, today) {
 </head>
 <body>
 <button class="print-btn" onclick="window.print()">Print / Save PDF</button>
-
 <div class="masthead">
   <div class="meta">Est. 2025<br/>Intelligence Brief<br/>For Research Use</div>
   <div style="text-align:center">
@@ -53,14 +52,12 @@ function openInTab(brief, today) {
   </div>
   <div class="meta" style="text-align:right">${today}</div>
 </div>
-
 <div class="report-header">
   <div class="kicker">${brief.kicker||""}</div>
   <h2>${brief.headline||""}</h2>
   <div class="deck">${brief.deck||""}</div>
   <div class="byline">Senex Intelligence Unit · ${today}</div>
 </div>
-
 <div class="data-strip">
   ${(brief.marketData||[]).map(d=>`
   <div class="data-cell">
@@ -69,7 +66,6 @@ function openInTab(brief, today) {
     <div class="data-change ${d.direction||"neutral"}">${d.change}</div>
   </div>`).join("")}
 </div>
-
 <div class="body-grid">
   <div>
     ${(brief.sections||[]).map((s,i)=>`
@@ -92,7 +88,6 @@ function openInTab(brief, today) {
     </div>
   </div>
 </div>
-
 <div class="footer">
   <span>SENEX — For Research Use Only — Analytical/Indicative Data</span>
   <span>${today}</span>
@@ -171,11 +166,9 @@ Respond ONLY with valid JSON. No markdown, no backticks, no preamble. Use this e
 }`;
 
     try {
-     const response = await fetch('/api/brief', {
-  method: 'POST',
-  headers: {
-    'content-type': 'application/json',
-  },
+      const res = await fetch("/.netlify/functions/brief", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514",
           max_tokens: 4000,
@@ -183,8 +176,8 @@ Respond ONLY with valid JSON. No markdown, no backticks, no preamble. Use this e
         })
       });
 
-    const data = await response.json();
-if (!response.ok) throw new Error(data?.error?.message || "API error " + response.status);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error?.message || "API error " + res.status);
 
       const raw = data.content.map(b => b.type === "text" ? b.text : "").join("");
       const match = raw.match(/\{[\s\S]*\}/);
@@ -201,8 +194,6 @@ if (!response.ok) throw new Error(data?.error?.message || "API error " + respons
 
   return (
     <div style={{background:"#f4f0e8",minHeight:"100vh",fontFamily:"Georgia,serif",color:"#0d0d0d"}}>
-
-      {/* MASTHEAD */}
       <header style={{borderBottom:"3px double #0d0d0d",padding:"1.5rem 2rem 1rem",display:"flex",justifyContent:"space-between",alignItems:"flex-end"}}>
         <div style={{fontFamily:"monospace",fontSize:"0.6rem",letterSpacing:"0.1em",textTransform:"uppercase",color:"#6b6355",lineHeight:1.8}}>
           Est. 2025<br/>Intelligence Brief
@@ -217,12 +208,9 @@ if (!response.ok) throw new Error(data?.error?.message || "API error " + respons
       </header>
 
       <div style={{maxWidth:860,margin:"0 auto",padding:"0 1.5rem 4rem"}}>
-
-        {/* INPUT FORM */}
         {!brief && (
           <div style={{padding:"2rem 0"}}>
             <div style={{fontFamily:"monospace",fontSize:"0.58rem",letterSpacing:"0.25em",textTransform:"uppercase",color:"#6b6355",marginBottom:"1rem"}}>▸ Generate Intelligence Brief</div>
-
             <div style={{marginBottom:"1rem"}}>
               <div style={{fontFamily:"monospace",fontSize:"0.58rem",letterSpacing:"0.12em",textTransform:"uppercase",color:"#6b6355",marginBottom:"0.4rem"}}>Geopolitical Event</div>
               <textarea
@@ -232,7 +220,6 @@ if (!response.ok) throw new Error(data?.error?.message || "API error " + respons
                 style={{...inputStyle,resize:"vertical",minHeight:90,lineHeight:1.6}}
               />
             </div>
-
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1rem",marginBottom:"1.2rem"}}>
               <div>
                 <div style={{fontFamily:"monospace",fontSize:"0.58rem",letterSpacing:"0.12em",textTransform:"uppercase",color:"#6b6355",marginBottom:"0.4rem"}}>Region</div>
@@ -258,7 +245,6 @@ if (!response.ok) throw new Error(data?.error?.message || "API error " + respons
                 </select>
               </div>
             </div>
-
             <button
               onClick={generate}
               disabled={loading}
@@ -266,7 +252,6 @@ if (!response.ok) throw new Error(data?.error?.message || "API error " + respons
             >
               {loading ? "Analyzing..." : "Generate Brief"}
             </button>
-
             {error && (
               <div style={{marginTop:"1rem",background:"#fff0f0",border:"1px solid #8b1a1a",borderLeft:"4px solid #8b1a1a",padding:"0.8rem 1rem",fontSize:"0.85rem",color:"#8b1a1a"}}>
                 {error}
@@ -275,19 +260,14 @@ if (!response.ok) throw new Error(data?.error?.message || "API error " + respons
           </div>
         )}
 
-        {/* OUTPUT */}
         {brief && (
           <div style={{paddingTop:"2rem"}}>
-
-            {/* Header */}
             <div style={{borderBottom:"3px double #0d0d0d",paddingBottom:"1.5rem",marginBottom:"1.5rem"}}>
               <div style={{fontFamily:"monospace",fontSize:"0.55rem",letterSpacing:"0.3em",textTransform:"uppercase",color:"#8b1a1a",marginBottom:"0.5rem"}}>{brief.kicker}</div>
               <h2 style={{fontFamily:"Georgia,serif",fontSize:"1.8rem",fontWeight:700,lineHeight:1.2,marginBottom:"0.8rem"}}>{brief.headline}</h2>
               <p style={{fontSize:"1rem",fontStyle:"italic",color:"#6b6355",lineHeight:1.6,borderLeft:"3px solid #8b1a1a",paddingLeft:"1rem",margin:0}}>{brief.deck}</p>
               <div style={{fontFamily:"monospace",fontSize:"0.55rem",letterSpacing:"0.12em",textTransform:"uppercase",color:"#6b6355",marginTop:"0.8rem"}}>Senex Intelligence Unit · {today}</div>
             </div>
-
-            {/* Market data */}
             <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:1,background:"#c8b89a",border:"1px solid #c8b89a",marginBottom:"2rem"}}>
               {(brief.marketData||[]).map((d,i)=>(
                 <div key={i} style={{background:"#ede8dc",padding:"0.8rem 1rem"}}>
@@ -297,8 +277,6 @@ if (!response.ok) throw new Error(data?.error?.message || "API error " + respons
                 </div>
               ))}
             </div>
-
-            {/* Body + sidebar */}
             <div style={{display:"grid",gridTemplateColumns:"2fr 1fr",gap:"2rem",alignItems:"start"}}>
               <div style={{lineHeight:1.8,fontSize:"0.95rem"}}>
                 {(brief.sections||[]).map((s,i)=>(
@@ -308,7 +286,6 @@ if (!response.ok) throw new Error(data?.error?.message || "API error " + respons
                   </div>
                 ))}
               </div>
-
               <div>
                 {[
                   {title:"Risk Assessment", content: (
@@ -335,7 +312,6 @@ if (!response.ok) throw new Error(data?.error?.message || "API error " + respons
                 ))}
               </div>
             </div>
-
             <div style={{marginTop:"2rem",paddingTop:"1.2rem",borderTop:"1px solid #c8b89a",display:"flex",gap:"1rem"}}>
               <button onClick={()=>setBrief(null)} style={{background:"none",border:"1px solid #0d0d0d",padding:"0.5rem 1.2rem",fontFamily:"monospace",fontSize:"0.58rem",letterSpacing:"0.2em",textTransform:"uppercase",cursor:"pointer"}}>← New Brief</button>
               <button onClick={()=>openInTab(brief, today)} style={{background:"#0d0d0d",color:"#f4f0e8",border:"none",padding:"0.5rem 1.2rem",fontFamily:"monospace",fontSize:"0.58rem",letterSpacing:"0.2em",textTransform:"uppercase",cursor:"pointer"}}>↗ Open & Print</button>
