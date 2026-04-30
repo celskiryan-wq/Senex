@@ -97,3 +97,7 @@ def run_pipeline():
 
 if __name__ == "__main__":
     run_pipeline()
+    
+    # Auto-render approved briefs to HTML
+    from renderer import render_all_briefs
+    render_all_briefs()
