@@ -1,13 +1,19 @@
 import json
 import os
 from datetime import datetime
+from supabase import create_client
 from monitor import check_feeds
 from researcher import research_story
 from writer import write_brief
 from editor import edit_brief
 
+# Supabase client
+supabase = create_client(
+    os.environ.get("SUPABASE_URL"),
+    os.environ.get("SUPABASE_KEY")
+)
 def save_brief(brief, review):
-    """Save approved brief to a JSON file for now — we'll wire up Beehiiv later"""
+    """Save approved brief to Supabase and local JSON"""
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"briefs/brief_{timestamp}.json"
     
@@ -21,6 +27,26 @@ def save_brief(brief, review):
     
     with open(filename, "w") as f:
         json.dump(output, f, indent=2)
+    
+    # Save to Supabase
+    try:
+        supabase.table("briefs").insert({
+            "headline": brief.get("headline", ""),
+            "kicker": brief.get("kicker", ""),
+            "deck": brief.get("deck", ""),
+            "market_data": brief.get("marketData", []),
+            "sections": brief.get("sections", []),
+            "key_risks": brief.get("keyRisks", []),
+            "watchlist": brief.get("watchlist", []),
+            "risk_level": brief.get("riskLevel", ""),
+            "risk_rationale": brief.get("riskRationale", ""),
+            "source_url": brief.get("source_url", ""),
+            "quality_score": review.get("quality_score", 0),
+            "editor_note": review.get("editor_note", "")
+        }).execute()
+        print(f"  Saved to Supabase ✓")
+    except Exception as e:
+        print(f"  Supabase save failed: {e}")
     
     print(f"  Saved to {filename}")
     return filename
