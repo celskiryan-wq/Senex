@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Senex Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#f4f0e8; color:#0d0d0d; font-family:'Source Serif 4',Georgia,serif; }
+  
+  /* MASTHEAD */
+  .masthead { border-bottom:3px double #0d0d0d; padding:1.5rem 3rem; display:flex; justify-content:space-between; align-items:flex-end; }
+  .masthead-title { text-align:center; }
+  .masthead-title h1 { font-family:'Playfair Display',serif; font-size:2.5rem; font-weight:900; text-transform:uppercase; letter-spacing:0.05em; }
+  .masthead-sub { font-family:monospace; font-size:0.55rem; letter-spacing:0.25em; text-transform:uppercase; color:#6b6355; margin-top:4px; }
+  .masthead-meta { font-family:monospace; font-size:0.6rem; color:#6b6355; line-height:1.8; }
+
+  /* NAV */
+  nav { border-bottom:1px solid #c8b89a; padding:0.6rem 3rem; display:flex; gap:2rem; }
+  nav a { font-family:monospace; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:#6b6355; text-decoration:none; }
+  nav a:hover { color:#0d0d0d; }
+
+  /* MAIN */
+  .container { max-width:1100px; margin:0 auto; padding:2rem 2rem 4rem; }
+
+  /* BRIEF LIST */
+  .brief-card { border-bottom:1px solid #c8b89a; padding:1.5rem 0; display:grid; grid-template-columns:1fr auto; gap:2rem; align-items:start; cursor:pointer; }
+  .brief-card:hover .brief-headline { color:#8b1a1a; }
+  .brief-kicker { font-family:monospace; font-size:0.55rem; letter-spacing:0.25em; text-transform:uppercase; color:#8b1a1a; margin-bottom:0.5rem; }
+  .brief-headline { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; line-height:1.2; margin-bottom:0.5rem; transition:color 0.2s; }
+  .brief-deck { font-style:italic; color:#6b6355; font-size:0.9rem; line-height:1.6; }
+  .brief-meta { font-family:monospace; font-size:0.55rem; color:#6b6355; margin-top:0.5rem; }
+  .risk-badge { font-family:monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; padding:3px 8px; border:1px solid currentColor; white-space:nowrap; }
+  .risk-HIGH { color:#8b1a1a; }
+  .risk-MEDIUM { color:#8b6914; }
+  .risk-LOW { color:#1a5c3a; }
+
+  /* BRIEF DETAIL */
+  .brief-detail { display:none; }
+  .brief-detail.active { display:block; }
+  .back-btn { font-family:monospace; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; background:none; border:1px solid #0d0d0d; padding:0.5rem 1rem; cursor:pointer; margin-bottom:2rem; }
+  .back-btn:hover { background:#0d0d0d; color:#f4f0e8; }
+  .report-header { border-bottom:3px double #0d0d0d; padding-bottom:1.5rem; margin-bottom:1.5rem; }
+  .report-kicker { font-family:monospace; font-size:0.6rem; letter-spacing:0.3em; text-transform:uppercase; color:#8b1a1a; margin-bottom:0.5rem; }
+  .report-headline { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; line-height:1.2; margin-bottom:0.8rem; }
+  .report-deck { font-style:italic; color:#6b6355; line-height:1.6; border-left:3px solid #8b1a1a; padding-left:1rem; }
+  .report-byline { font-family:monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:#6b6355; margin-top:0.8rem; }
+  .data-strip { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:#c8b89a; margin-bottom:2rem; }
+  .data-cell { background:#ede8dc; padding:0.8rem 1rem; }
+  .data-label { font-family:monospace; font-size:0.5rem; letter-spacing:0.12em; text-transform:uppercase; color:#6b6355; margin-bottom:0.25rem; }
+  .data-value { font-family:monospace; font-size:0.85rem; font-weight:500; }
+  .data-change { font-family:monospace; font-size:0.65rem; margin-top:0.2rem; }
+  .up { color:#1a5c3a; } .down { color:#8b1a1a; } .neutral { color:#6b6355; }
+  .body-grid { display:grid; grid-template-columns:2fr 1fr; gap:2rem; align-items:start; }
+  .section-heading { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; margin:1.5rem 0 0.5rem; padding-top:1.5rem; border-top:1px solid #c8b89a; }
+  .section-heading:first-child { margin-top:0; padding-top:0; border-top:none; }
+  .section-content { line-height:1.8; margin-bottom:1rem; font-size:0.95rem; }
+  .sidebar-box { background:#ede8dc; border:1px solid #c8b89a; border-top:3px solid #0d0d0d; padding:1rem; margin-bottom:1rem; }
+  .sidebar-title { font-family:monospace; font-size:0.52rem; letter-spacing:0.2em; text-transform:uppercase; color:#6b6355; margin-bottom:0.6rem; padding-bottom:0.5rem; border-bottom:1px solid #c8b89a; }
+  .sidebar-item { display:flex; gap:0.5rem; padding:0.35rem 0; border-bottom:1px dotted #c8b89a; font-size:0.83rem; line-height:1.5; }
+  .sidebar-item:last-child { border-bottom:none; }
+  .bullet { color:#8b1a1a; font-weight:700; flex-shrink:0; }
+
+  /* LOADING */
+  .loading { text-align:center; font-family:monospace; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; color:#6b6355; padding:4rem; }
+
+  /* FOOTER */
+  footer { border-top:1px solid #c8b89a; padding:1.5rem 3rem; font-family:monospace; font-size:0.55rem; color:#6b6355; display:flex; justify-content:space-between; }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-meta">Est. 2026<br/>Intelligence Brief<br/>For Research Use</div>
+  <div class="masthead-title">
+    <h1>Senex</h1>
+    <div class="masthead-sub">Geopolitical Market Intelligence</div>
+  </div>
+  <div class="masthead-meta" style="text-align:right" id="dateStamp"></div>
+</header>
+
+<nav>
+  <a href="#" onclick="showList()">Briefs</a>
+  <a href="#">GPC Scoreboard</a>
+  <a href="#">About</a>
+  <a href="#">Subscribe</a>
+</nav>
+
+<div class="container">
+  <div id="briefList">
+    <div class="loading">Loading intelligence briefs...</div>
+  </div>
+  <div id="briefDetail" class="brief-detail"></div>
+</div>
+
+<footer>
+  <span>Senex Intelligence · senexintel.com</span>
+  <span>For Research Use Only · Analytical/Indicative Data</span>
+</footer>
+
+<script>
+const SUPABASE_URL = "https://hnwyikgcycofoypgsjsg.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhud3lpa2djeWNvZm95cGdzanNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1ODgyNDYsImV4cCI6MjA5MzE2NDI0Nn0.ToI-ps_Ka_1Bg748wB4scHlzJOHkXMlELfs5NnhSy-g";
+
+document.getElementById("dateStamp").innerHTML = new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"});
+
+async function fetchBriefs() {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/briefs?select=*&order=published_at.desc&limit=20`, {
+    headers: {
+      "apikey": SUPABASE_KEY,
+      "Authorization": `Bearer ${SUPABASE_KEY}`
+    }
+  });
+  return await res.json();
+}
+
+function formatDate(ts) {
+  return new Date(ts).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});
+}
+
+function renderList(briefs) {
+  const el = document.getElementById("briefList");
+  if (!briefs.length) { el.innerHTML = '<div class="loading">No briefs published yet.</div>'; return; }
+  el.innerHTML = briefs.map((b,i) => `
+    <div class="brief-card" onclick="showDetail(${i})">
+      <div>
+        <div class="brief-kicker">${b.kicker||""}</div>
+        <div class="brief-headline">${b.headline||""}</div>
+        <div class="brief-deck">${b.deck||""}</div>
+        <div class="brief-meta">Senex Intelligence Unit · ${formatDate(b.published_at||b.created_at)}</div>
+      </div>
+      <span class="risk-badge risk-${b.risk_level||"MEDIUM"}">${b.risk_level||"MEDIUM"}</span>
+    </div>
+  `).join("");
+  window._briefs = briefs;
+}
+
+function showDetail(i) {
+  const b = window._briefs[i];
+  const marketHtml = (b.market_data||[]).map(d => `
+    <div class="data-cell">
+      <div class="data-label">${d.label||""}</div>
+      <div class="data-value">${d.value||""}</div>
+      <div class="data-change ${d.direction||"neutral"}">${d.change||""}</div>
+    </div>`).join("");
+
+  const sectionsHtml = (b.sections||[]).map((s,i) => `
+    <div class="section-heading ${i===0?'first':''}" style="${i===0?'margin-top:0;padding-top:0;border-top:none':''}">${s.heading||""}</div>
+    <div class="section-content">${s.content||""}</div>`).join("");
+
+  const risksHtml = (b.key_risks||[]).map(r => `
+    <div class="sidebar-item"><span class="bullet">◆</span>${r}</div>`).join("");
+
+  const watchHtml = (b.watchlist||[]).map(w => `
+    <div class="sidebar-item"><span class="bullet">→</span>${w}</div>`).join("");
+
+  const riskCol = b.risk_level==="HIGH"?"#8b1a1a":b.risk_level==="LOW"?"#1a5c3a":"#8b6914";
+
+  document.getElementById("briefDetail").innerHTML = `
+    <button class="back-btn" onclick="showList()">← All Briefs</button>
+    <div class="report-header">
+      <div class="report-kicker">${b.kicker||""}</div>
+      <h2 class="report-headline">${b.headline||""}</h2>
+      <p class="report-deck">${b.deck||""}</p>
+      <div class="report-byline">Senex Intelligence Unit · ${formatDate(b.published_at||b.created_at)}</div>
+    </div>
+    <div class="data-strip">${marketHtml}</div>
+    <div class="body-grid">
+      <div>${sectionsHtml}</div>
+      <div>
+        <div class="sidebar-box">
+          <div class="sidebar-title">Risk Assessment</div>
+          <span class="risk-badge" style="color:${riskCol};border-color:${riskCol};display:inline-block;margin-bottom:0.5rem">${b.risk_level||"MEDIUM"} RISK</span>
+          <p style="font-size:0.82rem;color:#6b6355;line-height:1.6;margin-top:0.4rem">${b.risk_rationale||""}</p>
+        </div>
+        <div class="sidebar-box">
+          <div class="sidebar-title">Key Risks</div>
+          ${risksHtml}
+        </div>
+        <div class="sidebar-box">
+          <div class="sidebar-title">Watchlist</div>
+          ${watchHtml}
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById("briefList").style.display = "none";
+  document.getElementById("briefDetail").classList.add("active");
+  window.scrollTo(0,0);
+}
+
+function showList() {
+  document.getElementById("briefDetail").classList.remove("active");
+  document.getElementById("briefList").style.display = "block";
+}
+
+// Load briefs on page load
+fetchBriefs().then(renderList).catch(e => {
+  document.getElementById("briefList").innerHTML = '<div class="loading">Error loading briefs.</div>';
+  console.error(e);
+});
+</script>
+</body>
+</html>
