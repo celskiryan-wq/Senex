@@ -56,13 +56,20 @@ def research_story(flagged_story):
         }]
     )
     
-    raw = result.content[0].text.strip()
+   raw = result.content[0].text.strip()
+    print(f"  Raw response length: {len(raw)}")
     match = re.search(r'\{.*\}', raw, re.DOTALL)
     if not match:
         print(f"  Could not parse research for: {flagged_story['headline']}")
+        print(f"  Raw: {raw[:200]}")
         return None
     
-    research = json.loads(match.group())
+    try:
+        research = json.loads(match.group())
+    except Exception as e:
+        print(f"  JSON parse error: {e}")
+        print(f"  Raw JSON: {match.group()[:200]}")
+        return None
     research["headline"] = flagged_story["headline"]
     research["summary"] = flagged_story["summary"]
     research["url"] = flagged_story["url"]
