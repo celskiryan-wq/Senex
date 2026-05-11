@@ -56,7 +56,7 @@ def research_story(flagged_story):
         }]
     )
     
-   raw = result.content[0].text.strip()
+    raw = result.content[0].text.strip()
     print(f"  Raw response length: {len(raw)}")
     match = re.search(r'\{.*\}', raw, re.DOTALL)
     if not match:
