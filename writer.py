@@ -44,11 +44,14 @@ Write the brief in this exact JSON structure, no other text:
 }}
 
 Rules:
-- Market data must be analytical/indicative — label it as such
-- Every market claim must have a causal mechanism, not just a direction
-- The analytical assessment must take a clear position
-- Write for think tank researchers and policy professionals
-- No hedging language like 'could potentially' or 'might possibly'"""
+- Every brief must explicitly name the GPC competitive domain affected
+- The analytical assessment must address the long-term trajectory of the competition, not just the immediate event
+- Market data must have explicit causal mechanisms — never just a direction
+- The brief must take a clear falsifiable position
+- Write for think tank researchers and policy professionals who understand GPC frameworks
+- No hedging language like 'could potentially' or 'might possibly'
+- The GPC implications must be in the first section, not buried
+- Distinguish between tactical moves and structural shifts explicitly"""
 
 def write_brief(research_package):
     print(f"Writing brief: {research_package['headline'][:60]}...")
