@@ -42,7 +42,8 @@ def save_brief(brief, review):
             "risk_rationale": brief.get("riskRationale", ""),
             "source_url": brief.get("source_url", ""),
             "quality_score": review.get("quality_score", 0),
-            "editor_note": review.get("editor_note", "")
+            "editor_note": review.get("editor_note", ""),
+            "status": "pending"
         }).execute()
         print(f"  Saved to Supabase ✓")
     except Exception as e:
